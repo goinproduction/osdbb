@@ -1,0 +1,3 @@
+- entities là nơi chứa các model của ứng dụng
+- repository là nơi chứa các operations tương tác với database
+
