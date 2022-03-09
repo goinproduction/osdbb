@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { responseHandler } from '../../../common/service/response.service'
 import AuthService from '../services/auth.service'
-import { SignUpDto } from '../DTO/auth.dto'
+import { SignUpDto, SignInDto } from '../DTO/auth.dto'
 import StaticStringKeys from '../../../common/constant/constant'
 
 export default class AuthController {
@@ -17,9 +17,25 @@ export default class AuthController {
             };
             const object = await this.AuthService.register(data);
             if (object.success) {
-                responseHandler(res, 201, object.message, object.data);
+                responseHandler(res, object.statusCode, object.message, object.data);
             } else {
-                responseHandler(res, 403, object.message);
+                responseHandler(res, object.statusCode, object.message);
+            }
+        } catch (error) {
+            responseHandler(res, 500, StaticStringKeys.INTERNAL_SERVER_ERROR, error);
+        }
+    }
+    handleLogin = async (req: Request, res: Response) => {
+        try {
+            const data: SignInDto = {
+                username: req.body.username,
+                password: req.body.password
+            }
+            const object = await this.AuthService.login(data);
+            if (object.success) {
+                responseHandler(res, object.statusCode, object.message, object.data);
+            } else {
+                responseHandler(res, object.statusCode, object.message);
             }
         } catch (error) {
             responseHandler(res, 500, StaticStringKeys.INTERNAL_SERVER_ERROR, error);

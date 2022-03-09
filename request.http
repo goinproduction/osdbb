@@ -2,9 +2,19 @@ POST http://localhost:8080/api/auth/register
 Content-Type: application/json
 
 {
-    "username": "admin",
-    "email": "admin@admin.com",
+    "username": "admin33",
+    "email": "admin33@admin.com",
     "password": "admin",
-    "phone_number": "0333513828",
-    "full_name": "administrator"
+    "phone_number": 843535930,
+    "full_name": "ẹt min backup"
 }
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "admin"
+}
+

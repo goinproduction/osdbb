@@ -10,6 +10,7 @@ export async function loginValidation(req: Request, res: Response, next: NextFun
         req.body = validated
         next()
     } catch (err) {
+        console.log(err)
         responseHandler(res, 400, 'Invalid format, please try again!');
     }
 }

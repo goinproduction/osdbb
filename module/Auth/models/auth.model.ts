@@ -5,7 +5,7 @@ const authSchema = new Schema({
     username: {
         type: String
     },
-    passwords: {
+    password: {
         type: String
     },
     full_name: {
@@ -20,7 +20,7 @@ const authSchema = new Schema({
     },
     role: {
         type: String,
-        default: "USER"
+        default: 'USER'
     },
     win: {
         type: Number,
