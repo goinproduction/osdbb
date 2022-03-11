@@ -14,6 +14,7 @@ export interface IResponse {
     success: boolean,
     data?: object
 }
+
 interface IAuthService {
     register(data: SignUpDto): Promise<IResponse>,
     login(data: SignInDto): Promise<IResponse>,
@@ -29,7 +30,7 @@ export default class AuthService implements IAuthService {
         return new Promise<IResponse>(async (resolve, reject) => {
             try {
                 const hashedPassword = bcrypt.hashSync(data.password, salt);
-                // Check whether email or username is exist or not?
+                // Check whether email or username is exists or not?
                 const existingEmail = await Auth.findOne({ email: data.email }).exec();
                 const existingUsername = await Auth.findOne({ username: data.username }).exec();
                 if (existingEmail || existingUsername) {
@@ -174,6 +175,7 @@ export default class AuthService implements IAuthService {
             }
         })
     }
+
     public async updateUser(id: string, data: UpdateUserDto) {
         return new Promise<IResponse>(async (resolve, reject) => {
             try {

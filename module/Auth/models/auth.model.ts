@@ -3,7 +3,6 @@ const Schema = mongoose.Schema;
 export enum ROLE_NAME {
     USER = "USER",
     ADMIN = "ADMIN"
-
 }
 const authSchema = new Schema({
     username: {
