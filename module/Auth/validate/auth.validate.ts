@@ -15,8 +15,8 @@ export default class UserValidation {
     })
 
     updateSchema = Joi.object({
-        full_name: Joi.string().required(),
-        phone_number: Joi.string().regex(/(0[3|5|7|8|9])+([0-9]{8})\b/).required(),
-        avatar: Joi.required()
+        full_name: Joi.string().optional(),
+        phone_number: Joi.string().regex(/(0[3|5|7|8|9])+([0-9]{8})\b/).optional(),
+        avatar: Joi.optional()
     })
 }

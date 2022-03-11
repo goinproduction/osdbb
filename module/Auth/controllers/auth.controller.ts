@@ -4,8 +4,7 @@ import AuthService from '../services/auth.service'
 import { SignUpDto, SignInDto, UpdateUserDto } from '../DTO/auth.dto'
 import StaticStringKeys from '../../../common/constant/constant'
 
-export default class AuthController {
-    public AuthService: AuthService = new AuthService();
+export default class AuthController extends AuthService {
     handleRegister = async (req: Request, res: Response) => {
         try {
             const data: SignUpDto = {
@@ -15,7 +14,7 @@ export default class AuthController {
                 email: req.body.email,
                 phone_number: req.body.phone_number,
             };
-            const object = await this.AuthService.register(data);
+            const object = await this.register(data);
             if (object.success) {
                 responseHandler(res, object.statusCode, object.message, object.data);
             } {
@@ -32,7 +31,7 @@ export default class AuthController {
                 username: req.body.username,
                 password: req.body.password
             }
-            const object = await this.AuthService.login(data);
+            const object = await this.login(data);
             if (object.success) {
                 responseHandler(res, object.statusCode, object.message, object.data);
             } else {
@@ -47,7 +46,7 @@ export default class AuthController {
     handleGetUser = async (req: Request, res: Response) => {
         try {
             const id: string = req.params.id as string;
-            const object = await this.AuthService.getUser(id);
+            const object = await this.getUser(id);
             if (object.success) {
                 responseHandler(res, object.statusCode, object.message, object.data);
             } else {
@@ -59,9 +58,9 @@ export default class AuthController {
         }
     }
 
-    handleGetUsers = async (req: Request, res: Response) => {
+    handleGetAllUsers = async (req: Request, res: Response) => {
         try {
-            const object = await this.AuthService.getUsers();
+            const object = await this.getAllUsers();
             if (object.success) {
                 responseHandler(res, object.statusCode, object.message, object.data);
             } else {
@@ -81,7 +80,7 @@ export default class AuthController {
                 phone_number: req.body.phone_number,
                 avatar: req.file
             }
-            const object = await this.AuthService.updateUser(id, data);
+            const object = await this.updateUser(id, data);
             if (object.success) {
                 responseHandler(res, object.statusCode, object.message, object.data);
             } else {
@@ -95,7 +94,7 @@ export default class AuthController {
     handleDeleteUser = async (req: Request, res: Response) => {
         try {
             const id: string = req.params.id as string;
-            const object = await this.AuthService.deleteUser(id);
+            const object = await this.deleteUser(id);
             if (object.success) {
                 responseHandler(res, object.statusCode, object.message);
             } else {
@@ -110,12 +109,8 @@ export default class AuthController {
     handleActivateUser = async (req: Request, res: Response) => {
         try {
             const id: string = req.params.id as string;
-            const object = await this.AuthService.activateUser(id);
-            if (object.success) {
-                responseHandler(res, object.statusCode, object.message);
-            } else {
-                responseHandler(res, object.statusCode, object.message);
-            }
+            const object = await this.activateUser(id);
+            responseHandler(res, object.statusCode, object.message);
         } catch (error) {
             console.log(error);
             responseHandler(res, 500, StaticStringKeys.INTERNAL_SERVER_ERROR, error);
