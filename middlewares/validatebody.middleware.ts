@@ -24,3 +24,13 @@ export async function registerValidation(req: Request, res: Response, next: Next
         responseHandler(res, 400, 'Invalid format, please try again!');
     }
 }
+
+export async function updateValidation(req: Request, res: Response, next: NextFunction) {
+    try {
+        const validated = await userValidation.updateSchema.validateAsync(req.body)
+        req.body = validated
+        next()
+    } catch (err) {
+        responseHandler(res, 400, 'Invalid format, please try again!');
+    }
+}

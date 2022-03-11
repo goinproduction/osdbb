@@ -2,11 +2,11 @@ POST http://localhost:8080/api/auth/register
 Content-Type: application/json
 
 {
-    "username": "admin33",
-    "email": "admin33@admin.com",
-    "password": "admin",
-    "phone_number": 843535930,
-    "full_name": "ẹt min backup"
+    "username": "admin2",
+    "email": "admin2@admin.com",
+    "password": "Admin2@",
+    "phone_number": "0356606060",
+    "full_name": "sửu nè!!!"
 }
 
 ###
@@ -18,3 +18,13 @@ Content-Type: application/json
     "password": "admin"
 }
 
+###
+GET http://localhost:8080/api/user/6229a6959208004560281bb3
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjI5YTY5NTkyMDgwMDQ1NjAyODFiYjMiLCJpYXQiOjE2NDY5MDAwNjl9._oPbL5MvD3M7citDiH7-4OH1hxzH9Q14qroLulGFmgg
+
+###
+GET http://localhost:8080/api/user
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjI5YTY5NTkyMDgwMDQ1NjAyODFiYjMiLCJpYXQiOjE2NDY5MDAwNjl9._oPbL5MvD3M7citDiH7-4OH1hxzH9Q14qroLulGFmgg
+
+###
+DELETE http://localhost:8080/api/user/622868fe70d90916b8124cd9

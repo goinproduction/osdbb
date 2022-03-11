@@ -10,7 +10,8 @@ Connect();
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(morgan('tiny'));
+app.use(morgan('dev'));
+app.use('/uploads', express.static('uploads'));
 route(app);
 
 const PORT = process.env.PORT || 5000;

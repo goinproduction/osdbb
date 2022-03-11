@@ -1,6 +1,10 @@
 import mongoose from 'mongoose'
 const Schema = mongoose.Schema;
+export enum ROLE_NAME {
+    USER = "USER",
+    ADMIN = "ADMIN"
 
+}
 const authSchema = new Schema({
     username: {
         type: String
@@ -19,8 +23,8 @@ const authSchema = new Schema({
         default: 'https://i.ibb.co/5sPszLQ/avatar.jpg'
     },
     role: {
-        type: String,
-        default: 'USER'
+        type: ROLE_NAME,
+        default: ROLE_NAME.USER
     },
     win: {
         type: Number,
@@ -40,6 +44,10 @@ const authSchema = new Schema({
     },
     email: {
         type: String
+    },
+    active: {
+        type: Boolean,
+        default: false
     }
 })
 
