@@ -4,23 +4,20 @@ import bcrypt from 'bcrypt'
 import { SignUpDto, SignInDto, UpdateUserDto } from '../DTO/auth.dto'
 import { IDB, serializeGetUser } from '../serializers/auth.serializer'
 import StaticStringKeys from '../../../common/constant/constant'
+import { IResponse } from '../../../common/service/response.service'
 
 const saltRounds = 10;
 const salt = bcrypt.genSaltSync(saltRounds);
 
-export interface IResponse {
-    statusCode: number,
-    message: string,
-    success: boolean,
-    data?: object
-}
 interface IAuthService {
-    register(data: SignUpDto): Promise<IResponse>,
-    login(data: SignInDto): Promise<IResponse>,
-    getUser(id: string): Promise<IResponse>,
-    updateUser(id: string, data: UpdateUserDto): Promise<IResponse>,
-    deleteUser(id: string): Promise<IResponse>,
-    activateUser(id: string): Promise<IResponse>
+    register(data: SignUpDto): Promise<IResponse>;
+    login(data: SignInDto): Promise<IResponse>;
+    getUser(id: string): Promise<IResponse>;
+    getAllUsers(): Promise<IResponse>;
+    updateUser(id: string, data: UpdateUserDto): Promise<IResponse>;
+    deleteUser(id: string): Promise<IResponse>;
+    activateUser(id: string): Promise<IResponse>;
+    updateUserDept(id: string, amount: number): Promise<IResponse>;
 }
 
 export default class AuthService implements IAuthService {
@@ -148,7 +145,7 @@ export default class AuthService implements IAuthService {
         })
     }
 
-    public async getUsers() {
+    public async getAllUsers() {
         return new Promise<IResponse>(async (resolve, reject) => {
             try {
                 const data = await Auth.find().exec();
@@ -253,6 +250,33 @@ export default class AuthService implements IAuthService {
                 resolve(error);
             } catch (error) {
                 reject(error);
+            }
+        })
+    }
+    public async updateUserDept(id: string, amount: number) {
+        return new Promise<IResponse>(async (resolve, reject) => {
+            try {
+                // Check whether user existed or not?
+                const isExisted = await Auth.findOne({ _id: id }).exec();
+                if (isExisted) {
+                    const newDept = isExisted.dept + amount;
+                    const update = await Auth.findOneAndUpdate({ _id: id }, { dept: newDept }, { new: true }).exec();
+                    const response: IResponse = {
+                        statusCode: 200,
+                        message: 'User dept has been updated successfully',
+                        success: true,
+                        data: serializeGetUser(update)
+                    }
+                    resolve(response)
+                }
+                const error: IResponse = {
+                    statusCode: 404,
+                    message: 'User does not exist, please try again!!!',
+                    success: false
+                }
+                resolve(error);
+            } catch (error) {
+                reject(error)
             }
         })
     }

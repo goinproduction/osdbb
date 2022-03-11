@@ -9,7 +9,7 @@ export interface IDB {
     lose: number,
     win_rate: number,
     dept: number,
-    token?: string
+    active: boolean
 }
 
 export interface IUser {
@@ -22,7 +22,8 @@ export interface IUser {
     win?: number,
     lose: number,
     win_rate: number,
-    dept: number
+    dept: number,
+    active: boolean
 }
 
 export function serializeGetUser(model: IDB): IUser {
@@ -36,6 +37,7 @@ export function serializeGetUser(model: IDB): IUser {
         win: model.win,
         lose: model.lose,
         win_rate: model.win_rate,
-        dept: model.dept
+        dept: model.dept,
+        active: model.active
     }
 }

@@ -28,3 +28,24 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjI5Y
 
 ###
 DELETE http://localhost:8080/api/user/622868fe70d90916b8124cd9
+
+
+### LEAGUE API TESTING
+GET http://localhost:8080/api/league/
+
+###
+POST http://localhost:8080/api/league/
+Content-Type: application/json; charset=utf-8
+
+{
+    "lg_name": "AFF22",
+    "lg_teams": ["team01", "team02", "team03"]
+}
+
+###
+POST http://localhost:8080/api/league/622ad8e8b275ba361ce1c05c/addteam
+Content-Type: application/json
+
+{
+    "teamId": "team04"
+}
