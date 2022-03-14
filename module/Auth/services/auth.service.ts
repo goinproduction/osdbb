@@ -9,16 +9,6 @@ import { IResponse } from '../../../common/service/response.service'
 const saltRounds = 10;
 const salt = bcrypt.genSaltSync(saltRounds);
 
-<<<<<<< HEAD
-export interface IResponse {
-    statusCode: number,
-    message: string,
-    success: boolean,
-    data?: object
-}
-
-=======
->>>>>>> 340335bbe2895b695b1e8289db604a0d5f101861
 interface IAuthService {
     register(data: SignUpDto): Promise<IResponse>;
     login(data: SignInDto): Promise<IResponse>;

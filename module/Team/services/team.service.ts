@@ -1,24 +1,26 @@
-import { CreateTeamDto, UpdateTeamDto } from '../DTOs/team.dto'
+import { TeamDto } from '../DTOs/team.dto'
 import Team from '../models/team.model'
 import StaticStringKeys from '../../../common/constant/constant'
 import { IDB, serializeGetTeam } from '../serializers/team.serializer'
+import { IResponse } from '../../../common/service/response.service'
 
-export interface IResponse {
-    statusCode: number,
-    message: string,
-    success: boolean,
-    data?: object
-}
+// export interface IResponse {
+//     statusCode: number,
+//     message: string,
+//     success: boolean,
+//     data?: object
+// }
 
 interface ITeamService {
-    createTeam(data: CreateTeamDto): Promise<IResponse>,
+    createTeam(data: TeamDto): Promise<IResponse>,
     getTeam(id: string): Promise<IResponse>,
     getAllTeam(): Promise<IResponse>,
-    updateTeam(id: string, data: UpdateTeamDto): Promise<IResponse>,
+    updateTeam(id: string, data: TeamDto): Promise<IResponse>,
+    deleteTeam(id: string): Promise<IResponse>,
 }
 
 export default class TeamService implements ITeamService {
-    public async createTeam(data: CreateTeamDto) {
+    public async createTeam(data: TeamDto) {
         return new Promise<IResponse>(async (resolve, reject) => {
             try {
                 // Check whether team_name is exists or not?
@@ -65,7 +67,7 @@ export default class TeamService implements ITeamService {
                     // All good
                     const response: IResponse = {
                         statusCode: 200,
-                        message: 'Fetched team infomation successfully!',
+                        message: 'Fetched team information successfully!',
                         success: true,
                         data: {
                             team: serializeGetTeam(team)
@@ -97,7 +99,7 @@ export default class TeamService implements ITeamService {
                     // All good
                     const response: IResponse = {
                         statusCode: 200,
-                        message: 'Fetched all team infomation successfully!',
+                        message: 'Fetched all team information successfully!',
                         success: true,
                         data: {
                             teamList: data.map((item: IDB) => serializeGetTeam(item))
@@ -120,27 +122,53 @@ export default class TeamService implements ITeamService {
         })
     }
 
-    public async updateTeam(id: string, data: UpdateTeamDto) {
+    public async updateTeam(id: string, data: TeamDto) {
         return new Promise<IResponse> (async (resolve, reject) => {
             try {
                 const team = await Team.findOne({_id: id}).exec();
 
                 if(team) {
-                    if(data.logo) {
-                        data.logo = StaticStringKeys.BASE_URL + data.logo.path.replace(/\\/g, '/');
-                    } else {
-                        data.logo = team.logo
-                    }
+                    data.logo = data.logo ? StaticStringKeys.BASE_URL + data.logo.path.replace(/\\/g, '/') : team.logo;
 
                     const filedUpdate = {
                         team_name: data.team_name || team.team_name,
                         logo: data.logo,
                         player_list: data.player_list || team.player_list
                     }
-                    const update = await Team.updateOne({_id: id}, filedUpdate).exec();
+                    await Team.updateOne({_id: id}, filedUpdate).exec();
                     const response: IResponse = {
                         statusCode: 200,
-                        message: 'Updated team infomation successfully!',
+                        message: 'Updated team information successfully!',
+                        success: true,
+                    }
+
+                    resolve(response);
+                } else {
+                    const error: IResponse = {
+                        statusCode: 404,
+                        message: StaticStringKeys.NOT_FOUND,
+                        success: false
+                    }
+
+                    resolve(error);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        })
+    }
+
+    public async deleteTeam(id: string) {
+        return new Promise<IResponse> (async (resolve, reject) => {
+            try {
+                const team = await Team.findOne({_id: id}).exec();
+
+                if(team) {
+                    await Team.deleteOne({_id: id}).exec();
+
+                    const response: IResponse = {
+                        statusCode: 200,
+                        message: 'Deleted team successfully!',
                         success: true,
                     }
 
