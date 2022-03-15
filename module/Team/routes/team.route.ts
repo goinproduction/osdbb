@@ -26,5 +26,7 @@ teamRouter.get('/:id', verifyToken, teamController.handleGetTeam);
 teamRouter.get('/', verifyToken, teamController.handleGetAllTeam);
 teamRouter.put('/:id', [verifyToken, upload.single('logo')], teamController.handleUpdateTeam);
 teamRouter.delete('/:id', verifyToken, teamController.handleDeleteTeam);
+teamRouter.post('/:id/addPlayer', verifyToken, teamController.handleAddPlayerToTeam);
+teamRouter.post('/:id/deletePlayer', verifyToken, teamController.handleDeletePlayerFromTeam);
 
 export default teamRouter;

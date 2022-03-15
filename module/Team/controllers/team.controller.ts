@@ -71,8 +71,39 @@ export default class TeamController extends TeamService {
 
     handleDeleteTeam = async (req: Request, res: Response) => {
         try {
-            const id = req.params.id;
+            const id: string = req.params.id;
+
             const object = await this.deleteTeam(id);
+
+            object.success ? responseHandler(res, object.statusCode, object.message, object.data) 
+                : responseHandler(res, object.statusCode, object.message)
+        } catch (error) {
+            console.log(error);
+            responseHandler(res, 500, StaticStringKeys.INTERNAL_SERVER_ERROR, error);
+        }
+    }
+
+    handleAddPlayerToTeam = async (req: Request, res: Response) => {
+        try {
+            const id: string = req.params.id;
+            const playerId: string = req.body.playerId;
+
+            const object = await this.addPlayerToTeam(id, playerId);
+
+            object.success ? responseHandler(res, object.statusCode, object.message, object.data) 
+                : responseHandler(res, object.statusCode, object.message)
+        } catch (error) {
+            console.log(error);
+            responseHandler(res, 500, StaticStringKeys.INTERNAL_SERVER_ERROR, error);
+        }
+    }
+
+    handleDeletePlayerFromTeam = async (req: Request, res: Response) => {
+        try {
+            const id: string = req.params.id;
+            const playerId: string = req.body.playerId;
+
+            const object = await this.deletePlayerFromTeam(id, playerId);
 
             object.success ? responseHandler(res, object.statusCode, object.message, object.data) 
                 : responseHandler(res, object.statusCode, object.message)

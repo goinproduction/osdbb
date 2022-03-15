@@ -36,6 +36,7 @@ export default class LeagueService implements ILeagueService {
             }
         })
     }
+
     public async addLeague(data: LeagueDto) {
         return new Promise<IResponse>(async (resolve, reject) => {
             try {
@@ -72,6 +73,7 @@ export default class LeagueService implements ILeagueService {
             }
         })
     }
+
     public async addTeamToLeague(id: string, teamId: string) {
         return new Promise<IResponse>(async (resolve, reject) => {
             try {
@@ -102,6 +104,7 @@ export default class LeagueService implements ILeagueService {
             }
         })
     }
+
     public async deleteLeague(id: string) {
         return new Promise<IResponse>(async (resolve, reject) => {
             try {

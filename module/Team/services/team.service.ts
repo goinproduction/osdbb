@@ -3,13 +3,7 @@ import Team from '../models/team.model'
 import StaticStringKeys from '../../../common/constant/constant'
 import { IDB, serializeGetTeam } from '../serializers/team.serializer'
 import { IResponse } from '../../../common/service/response.service'
-
-// export interface IResponse {
-//     statusCode: number,
-//     message: string,
-//     success: boolean,
-//     data?: object
-// }
+import { rejects } from 'assert'
 
 interface ITeamService {
     createTeam(data: TeamDto): Promise<IResponse>,
@@ -17,6 +11,8 @@ interface ITeamService {
     getAllTeam(): Promise<IResponse>,
     updateTeam(id: string, data: TeamDto): Promise<IResponse>,
     deleteTeam(id: string): Promise<IResponse>,
+    addPlayerToTeam(id: string, playerId: string): Promise<IResponse>,
+    deletePlayerFromTeam(id: string, playerId: string): Promise<IResponse>,
 }
 
 export default class TeamService implements ITeamService {
@@ -135,11 +131,12 @@ export default class TeamService implements ITeamService {
                         logo: data.logo,
                         player_list: data.player_list || team.player_list
                     }
-                    await Team.updateOne({_id: id}, filedUpdate).exec();
+                    const update = await Team.findOneAndUpdate({_id: id}, filedUpdate, {new: true}).exec();
                     const response: IResponse = {
                         statusCode: 200,
                         message: 'Updated team information successfully!',
                         success: true,
+                        data: serializeGetTeam(update)
                     }
 
                     resolve(response);
@@ -170,6 +167,77 @@ export default class TeamService implements ITeamService {
                         statusCode: 200,
                         message: 'Deleted team successfully!',
                         success: true,
+                    }
+
+                    resolve(response);
+                } else {
+                    const error: IResponse = {
+                        statusCode: 404,
+                        message: StaticStringKeys.NOT_FOUND,
+                        success: false
+                    }
+
+                    resolve(error);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        })
+    }
+
+    public async addPlayerToTeam(id: string, playerId: string) {
+        return new Promise<IResponse> (async (resolve, reject) => {
+            try {
+                const team = await Team.findOne({_id: id}).exec();
+
+                if(team) {
+                    const playerList = team.player_list;
+                    playerList.push(playerId);
+
+                    const update = await Team.findOneAndUpdate({_id: id}, {player_list: playerList}, {new: true}).exec();
+
+                    const response: IResponse = {
+                        statusCode: 200,
+                        message: 'Added player to team successfully!',
+                        success: true,
+                        data: serializeGetTeam(update)
+                    }
+
+                    resolve(response);
+                } else {
+                    const error: IResponse = {
+                        statusCode: 404,
+                        message: StaticStringKeys.NOT_FOUND,
+                        success: false
+                    }
+
+                    resolve(error);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        })
+    }
+
+    public async deletePlayerFromTeam(id: string, playerId: string) {
+        return new Promise<IResponse> (async (resolve, reject) => {
+            try {
+                const team = await Team.findOne({_id: id}).exec();
+
+                if(team) {
+                    const playerList = team.player_list;
+
+                    for(var i in playerList) {
+                        playerList[i] === playerId ? playerList.splice(i, 1) : playerList;
+                    }
+
+                    const update = await Team.findOneAndUpdate({_id: id}, {player_list: playerList}, {new: true});
+
+                    const response: IResponse = {
+                        statusCode: 200,
+                        message: 'Deleted player from team successfully!',
+                        success: true,
+                        data: serializeGetTeam(update)
                     }
 
                     resolve(response);

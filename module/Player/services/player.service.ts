@@ -129,11 +129,12 @@ export default class PlayerService implements IPlayerService {
                         player_avatar: data.player_avatar,
                         player_position: data.player_position || player.player_position
                     }
-                    await Player.updateOne({_id: id}, dataUpdate);
+                    const update = await Player.findOneAndUpdate({_id: id}, dataUpdate, {new: true});
                     const response: IResponse = {
                         statusCode: 200,
                         message: 'Updated player information successfully!',
                         success: true,
+                        data: serializeGetPlayer(update)
                     }
 
                     resolve(response);
