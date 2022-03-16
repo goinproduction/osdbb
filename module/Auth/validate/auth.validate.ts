@@ -14,6 +14,13 @@ export default class UserValidation {
         password: Joi.required()
     })
 
+    loginGoogleSchema = Joi.object({
+        username: Joi.required(),
+        full_name: Joi.required(),
+        email: Joi.required(),
+        avatar: Joi.required(),
+    })
+
     updateSchema = Joi.object({
         full_name: Joi.string().optional(),
         phone_number: Joi.string().regex(/(0[3|5|7|8|9])+([0-9]{8})\b/).optional(),

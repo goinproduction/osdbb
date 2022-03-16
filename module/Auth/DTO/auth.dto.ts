@@ -16,3 +16,10 @@ export interface UpdateUserDto {
     phone_number: string,
     avatar: any
 }
+
+export interface SignInGoogle {
+    username: string,
+    full_name: string,
+    email: string,
+    avatar: any
+}

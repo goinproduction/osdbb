@@ -1,6 +1,6 @@
 import express from 'express';
 import AuthController from '../controllers/auth.controller';
-import { registerValidation, loginValidation, updateValidation } from '../../../middlewares/validatebody.middleware'
+import { registerValidation, loginValidation, updateValidation, loginGoogleValidation } from '../../../middlewares/validatebody.middleware'
 import { verifyToken } from '../../../middlewares/authen.middleware'
 import upload from '../../../middlewares/upload.middleware'
 
@@ -9,6 +9,7 @@ const authController = new AuthController();
 
 authRouter.post('/auth/register', registerValidation, authController.handleRegister);
 authRouter.post('/auth/login', loginValidation, authController.handleLogin);
+authRouter.post('/auth/loginGoogle', loginGoogleValidation, authController.handleLoginGoogle);
 authRouter.get('/user/:id', verifyToken, authController.handleGetUser)
 authRouter.get('/user', verifyToken, authController.handleGetAllUsers)
 authRouter.put('/user/:id', [verifyToken, updateValidation, upload.single('avatar')], authController.handleUpdateUser)

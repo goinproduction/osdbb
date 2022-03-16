@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { responseHandler } from '../../../common/service/response.service'
 import AuthService from '../services/auth.service'
-import { SignUpDto, SignInDto, UpdateUserDto } from '../DTO/auth.dto'
+import { SignUpDto, SignInDto, UpdateUserDto, SignInGoogle } from '../DTO/auth.dto'
 import StaticStringKeys from '../../../common/constant/constant'
 
 export default class AuthController extends AuthService {
@@ -25,6 +25,7 @@ export default class AuthController extends AuthService {
             responseHandler(res, 500, StaticStringKeys.INTERNAL_SERVER_ERROR, error);
         }
     }
+
     handleLogin = async (req: Request, res: Response) => {
         try {
             const data: SignInDto = {
@@ -37,6 +38,25 @@ export default class AuthController extends AuthService {
             } else {
                 responseHandler(res, object.statusCode, object.message);
             }
+        } catch (error) {
+            console.log(error);
+            responseHandler(res, 500, StaticStringKeys.INTERNAL_SERVER_ERROR, error);
+        }
+    }
+
+    handleLoginGoogle = async (req: Request, res: Response) => {
+        try {
+            const data: SignInGoogle = {
+                username: req.body.username,
+                full_name: req.body.full_name,
+                email: req.body.email,
+                avatar: req.body.avatar
+            }
+
+            const object = await this.loginGoogle(data);
+
+            object.success ? responseHandler(res, object.statusCode, object.message, object.data) 
+                : responseHandler(res, object.statusCode, object.message);
         } catch (error) {
             console.log(error);
             responseHandler(res, 500, StaticStringKeys.INTERNAL_SERVER_ERROR, error);

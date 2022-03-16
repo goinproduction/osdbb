@@ -16,6 +16,17 @@ export async function loginValidation(req: Request, res: Response, next: NextFun
     }
 }
 
+export async function loginGoogleValidation(req: Request, res: Response, next: NextFunction) {
+    try {
+        const validated = await userValidation.loginGoogleSchema.validateAsync(req.body)
+        req.body = validated
+        next()
+    } catch (err) {
+        console.log(err)
+        responseHandler(res, 400, StaticStringKeys.INVALID_FORMAT);
+    }
+}
+
 export async function registerValidation(req: Request, res: Response, next: NextFunction) {
     try {
         const validated = await userValidation.registerSchema.validateAsync(req.body)

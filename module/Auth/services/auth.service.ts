@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import Auth from '../models/auth.model'
 import bcrypt from 'bcrypt'
-import { SignUpDto, SignInDto, UpdateUserDto } from '../DTO/auth.dto'
+import { SignUpDto, SignInDto, UpdateUserDto, SignInGoogle } from '../DTO/auth.dto'
 import { IDB, serializeGetUser } from '../serializers/auth.serializer'
 import StaticStringKeys from '../../../common/constant/constant'
 import { IResponse } from '../../../common/service/response.service'
@@ -12,6 +12,7 @@ const salt = bcrypt.genSaltSync(saltRounds);
 interface IAuthService {
     register(data: SignUpDto): Promise<IResponse>;
     login(data: SignInDto): Promise<IResponse>;
+    loginGoogle(data: SignInGoogle): Promise<IResponse>;
     getUser(id: string): Promise<IResponse>;
     getAllUsers(): Promise<IResponse>;
     updateUser(id: string, data: UpdateUserDto): Promise<IResponse>;
@@ -62,6 +63,55 @@ export default class AuthService implements IAuthService {
                     }
                 }
                 resolve(response);
+            } catch (error) {
+                reject(error);
+            }
+        })
+    }
+
+    public async loginGoogle(data: SignInGoogle) {
+        return new Promise<IResponse> (async (resolve, reject) => {
+            try {
+                const exsitingEmail = await Auth.findOne({email: data.email}).exec();
+                const exsitingName = await Auth.findOne({username: data.username}).exec();
+
+                if(exsitingEmail || exsitingName) {
+                    let error: IResponse = {
+                        statusCode: 400,
+                        message: 'Email or username has already existed',
+                        success: false
+                    }
+
+                    resolve(error);
+                } else {
+                    // All good
+                    const newUser = new Auth({
+                        username: data.username,
+                        full_name: data.full_name,
+                        email: data.email,
+                        avatar: data.avatar
+                    })
+
+                    await newUser.save();
+
+                    const token = jwt.sign({
+                        userId: newUser._id,
+                    }, process.env.ACCESS_TOKEN_SECRET as string);
+
+                    const user = await Auth.findOne({email: data.email}).exec();
+
+                    const response: IResponse = {
+                        success: true,
+                        statusCode: 200,
+                        message: 'Account has been created successfully!',
+                        data: {
+                            token,
+                            user: serializeGetUser(user)
+                        }
+                    }
+                    
+                    resolve(response);
+                }
             } catch (error) {
                 reject(error);
             }
@@ -254,6 +304,7 @@ export default class AuthService implements IAuthService {
             }
         })
     }
+
     public async updateUserDept(id: string, amount: number) {
         return new Promise<IResponse>(async (resolve, reject) => {
             try {
