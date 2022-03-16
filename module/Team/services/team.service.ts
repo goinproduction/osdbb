@@ -1,7 +1,7 @@
 import { TeamDto } from '../DTOs/team.dto'
 import Team from '../models/team.model'
 import StaticStringKeys from '../../../common/constant/constant'
-import { IDB, serializeGetTeam } from '../serializers/team.serializer'
+import { IDBTeam, serializeGetTeam } from '../serializers/team.serializer'
 import { IResponse } from '../../../common/service/response.service'
 import { rejects } from 'assert'
 
@@ -98,7 +98,7 @@ export default class TeamService implements ITeamService {
                         message: 'Fetched all team information successfully!',
                         success: true,
                         data: {
-                            teamList: data.map((item: IDB) => serializeGetTeam(item))
+                            teamList: data.map((item: IDBTeam) => serializeGetTeam(item))
                         }
                     }
 

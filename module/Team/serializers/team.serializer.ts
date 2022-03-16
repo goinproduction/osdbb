@@ -1,4 +1,4 @@
-export interface IDB {
+export interface IDBTeam {
     _id: string,
     team_name: string
     logo: string,
@@ -12,7 +12,7 @@ export interface ITeam {
     player_list: Array<object>,
 }
 
-export function serializeGetTeam(model: IDB): ITeam {
+export function serializeGetTeam(model: IDBTeam): ITeam {
     return {
         teamId: model._id,
         team_name: model.team_name,

@@ -8,5 +8,6 @@ leagueRouter.get('/', leagueController.handleGetAllLeagues)
 leagueRouter.post('/', leagueController.handleAddLeague)
 leagueRouter.post('/:id/addteam', leagueController.handleAddTeamToLeague)
 leagueRouter.delete('/:id', leagueController.handleDeleteLeague)
+leagueRouter.get('/:id', leagueController.handleFilterLeague)
 
 export default leagueRouter

@@ -1,14 +1,17 @@
 import { LeagueDto } from './../DTO/league.dto';
 import League from '../models/league.model'
+import Team from '../../Team/models/team.model'
 import StaticStringKeys from '../../../common/constant/constant'
 import { IDB, serializeGetLeague } from '../serializers/league.serializer'
 import { IResponse } from '../../../common/service/response.service'
+import {IDBTeam, serializeGetTeam} from '../../Team/serializers/team.serializer'
 
 interface ILeagueService {
     getLeagues(): Promise<IResponse>;
     addLeague(data: LeagueDto): Promise<IResponse>;
     addTeamToLeague(id: string, teamId: string): Promise<IResponse>;
     deleteLeague(id: string): Promise<IResponse>;
+    filterLeague(id: string): Promise<IResponse>;
 }
 
 export default class LeagueService implements ILeagueService {
@@ -50,11 +53,11 @@ export default class LeagueService implements ILeagueService {
                     }
                     resolve(error)
                 }
-                const newLeage = new League({
+                const newLeague = new League({
                     lg_name: data.lg_name,
                     lg_teams: data.lg_teams
                 })
-                if (await newLeage.save()) {
+                if (await newLeague.save()) {
                     const success: IResponse = {
                         statusCode: 201,
                         message: 'League has been created successfully',
@@ -127,6 +130,44 @@ export default class LeagueService implements ILeagueService {
                 resolve(error)
             } catch (error) {
                 reject(error)
+            }
+        })
+    }
+
+    public async filterLeague(leagueId: string) {
+        return new Promise<IResponse> (async (resolve, reject) => {
+            try {
+                const league = await League.findOne({_id: leagueId}).exec();
+
+                if(league) {
+                    const teamIds = league.lg_teams;
+
+                    const teams: IDBTeam[] = [];
+
+                    for(var i in teamIds) {
+                        const team = await Team.findOne({_id: teamIds[i]}).exec();
+                        teams.push(team);
+                    }
+
+                    const response: IResponse = {
+                        statusCode: 200,
+                        message: 'Filter League successfully!',
+                        success: true,
+                        data: teams.map((team: IDBTeam) => serializeGetTeam(team))
+                    }
+
+                    resolve(response);
+                } else {
+                    const error: IResponse = {
+                        statusCode: 404,
+                        message: 'League does not match with any result',
+                        success: false
+                    }
+
+                    resolve(error);
+                }
+            } catch (error) {
+                reject(error);
             }
         })
     }

@@ -18,6 +18,7 @@ export default class LeagueController extends LeagueService {
             responseHandler(res, 500, StaticStringKeys.INTERNAL_SERVER_ERROR)
         }
     }
+
     handleAddLeague = async (req: Request, res: Response) => {
         try {
             const data: LeagueDto = {
@@ -31,6 +32,7 @@ export default class LeagueController extends LeagueService {
             responseHandler(res, 500, StaticStringKeys.INTERNAL_SERVER_ERROR)
         }
     }
+
     handleDeleteLeague = async (req: Request, res: Response) => {
         try {
             const id: string = req.params.id as string;
@@ -41,6 +43,7 @@ export default class LeagueController extends LeagueService {
             responseHandler(res, 500, StaticStringKeys.INTERNAL_SERVER_ERROR)
         }
     }
+
     handleAddTeamToLeague = async (req: Request, res: Response) => {
         try {
             const id: string = req.params.id as string;
@@ -54,6 +57,20 @@ export default class LeagueController extends LeagueService {
         } catch (error) {
             console.log(error)
             responseHandler(res, 500, StaticStringKeys.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    handleFilterLeague = async (req: Request, res: Response) => {
+        try {
+            const leagueId = req.params.id;
+
+            const object = await this.filterLeague(leagueId);
+
+            object.success ? responseHandler(res, object.statusCode, object.message, object.data)
+                : responseHandler(res, object.statusCode, object.message, object.data);
+        } catch (error) {
+            console.log(error);
+            responseHandler(res, 500, StaticStringKeys.INTERNAL_SERVER_ERROR, error);
         }
     }
 }
