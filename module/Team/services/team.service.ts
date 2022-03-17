@@ -196,7 +196,7 @@ export default class TeamService implements ITeamService {
 
                     if(playerList.includes(playerId)) {
                         const error: IResponse = {
-                            statusCode: 404,
+                            statusCode: 400,
                             message: 'The player already exist in the team',
                             success: false
                         }
