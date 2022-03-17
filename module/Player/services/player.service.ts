@@ -33,6 +33,7 @@ export default class PlayerService implements IPlayerService {
                         player_name: data.player_name,
                         player_number: data.player_number,
                         player_avatar: StaticStringKeys.BASE_URL + data.player_avatar.path.replace(/\\/g, '/'),
+                        // player_avatar: data.player_avatar,
                         player_position: data.player_position
                     })
 
@@ -91,7 +92,7 @@ export default class PlayerService implements IPlayerService {
                 if(players) {
                     const response:IResponse = {
                         statusCode: 200,
-                        message: 'Fetched player information successfully!',
+                        message: 'Fetched all player information successfully!',
                         success: true,
                         data: {
                             playerList: players.map((player: IDB) => serializeGetPlayer(player))
