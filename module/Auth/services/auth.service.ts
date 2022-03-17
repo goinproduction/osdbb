@@ -73,16 +73,25 @@ export default class AuthService implements IAuthService {
         return new Promise<IResponse> (async (resolve, reject) => {
             try {
                 const exsitingEmail = await Auth.findOne({email: data.email}).exec();
-                const exsitingName = await Auth.findOne({username: data.username}).exec();
 
-                if(exsitingEmail || exsitingName) {
-                    let error: IResponse = {
-                        statusCode: 400,
-                        message: 'Email or username has already existed',
-                        success: false
+                if(exsitingEmail) {
+                    const user = await Auth.findOne({email: data.email}).exec();
+
+                    const token = jwt.sign({
+                        userId: user._id,
+                    }, process.env.ACCESS_TOKEN_SECRET as string);
+    
+                    const response: IResponse = {
+                        success: true,
+                        statusCode: 200,
+                        message: 'User has been logged in successfully',
+                        data: {
+                            token,
+                            user: serializeGetUser(user)
+                        }
                     }
 
-                    resolve(error);
+                    resolve(response);
                 } else {
                     // All good
                     const newUser = new Auth({
