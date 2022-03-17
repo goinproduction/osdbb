@@ -35,6 +35,7 @@ export default class TeamService implements ITeamService {
                     const newTeam = new Team({
                         team_name: data.team_name,
                         logo: StaticStringKeys.BASE_URL + data.logo.path.replace(/\\/g, '/'),
+                        // logo: data.logo,
                         player_list: data.player_list
                     })
 
@@ -192,18 +193,29 @@ export default class TeamService implements ITeamService {
 
                 if(team) {
                     const playerList = team.player_list;
-                    playerList.push(playerId);
 
-                    const update = await Team.findOneAndUpdate({_id: id}, {player_list: playerList}, {new: true}).exec();
+                    if(playerList.includes(playerId)) {
+                        const error: IResponse = {
+                            statusCode: 404,
+                            message: 'The player already exist in the team',
+                            success: false
+                        }
+    
+                        resolve(error);
+                    } else {
+                        playerList.push(playerId);
 
-                    const response: IResponse = {
-                        statusCode: 200,
-                        message: 'Added player to team successfully!',
-                        success: true,
-                        data: serializeGetTeam(update)
+                        const update = await Team.findOneAndUpdate({_id: id}, {player_list: playerList}, {new: true}).exec();
+
+                        const response: IResponse = {
+                            statusCode: 200,
+                            message: 'Added player to team successfully!',
+                            success: true,
+                            data: serializeGetTeam(update)
+                        }
+
+                        resolve(response);
                     }
-
-                    resolve(response);
                 } else {
                     const error: IResponse = {
                         statusCode: 404,
